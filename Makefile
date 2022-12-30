@@ -13,7 +13,7 @@ ASM_SRCS = $(wildcard boot/*.S)
 ASM_OBJS = $(patsubst boot/%.S, build/%.os, $(ASM_SRCS))
 
 C_SRCS = $(wildcard boot/*.c)
-C_OBJS = $(patsubst boot/%.c, build/%.o, $(ASM_SRCS))
+C_OBJS = $(patsubst boot/%.c, build/%.o, $(C_SRCS))
 
 INC_DIRS = include
 
