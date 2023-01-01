@@ -2,6 +2,13 @@
 #include "HalUart.h"
 #include "stdio.h"
 
+static uint32_t vsprintf(char* buf, const char* format, va_list arg);
+static uint32_t utoa(char* buf, uint32_t val, utoa_t base);
+
+#define PRINTF_BUF_LEN  1024
+
+static char printf_buf[PRINTF_BUF_LEN];   // 1KB
+
 uint32_t putstr(const char* s)
 {
     uint32_t c = 0;
@@ -20,10 +27,10 @@ uint32_t debug_printf(const char* format, ...)
     vsprintf(printf_buf, format, args);
     va_end(args);
 
-    return pustr(printf_buf);
+    return putstr(printf_buf);
 }
 
-uint32_t vsprintf(char* buf, const char* format, va_list arg)
+static uint32_t vsprintf(char* buf, const char* format, va_list arg)
 {
     uint32_t c = 0;
 
@@ -61,7 +68,7 @@ uint32_t vsprintf(char* buf, const char* format, va_list arg)
                     c +=utoa(&buf[c], uint, utoa_dec);
                 break;
 
-                case 'x';
+                case 'x' :
                     hex = (uint32_t)va_arg(arg, uint32_t);
                     c += utoa(&buf[c], hex, utoa_hex);
                 break;
@@ -83,7 +90,7 @@ uint32_t vsprintf(char* buf, const char* format, va_list arg)
     return c;
 }
 
-uint32_t utoa(char* buf, uint32_t val, utoa_t base)
+static uint32_t utoa(char* buf, uint32_t val, utoa_t base)
 {
     uint32_t    c = 0;
     int32_t     idx = 0;
