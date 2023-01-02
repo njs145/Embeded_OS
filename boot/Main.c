@@ -21,14 +21,7 @@ void main(void)
 
     Printf_test();
 
-    i = 100;
-    while(i--)
-    {
-        uint8_t ch = Hal_uart_get_char();
-        Hal_uart_put_char(ch);
-    }
-
-    Hal_uart_put_char('\n');
+    while(true);
 }
 
 static void Hw_init(void)

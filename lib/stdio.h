@@ -2,7 +2,8 @@
 #define LIB_STDIO_H_
 
 #include "stdarg.h"
-#define NULL ((void *)0)
+#define NULL    ((void *)0)
+#define true    1
 
 typedef enum utoa_t
 {
