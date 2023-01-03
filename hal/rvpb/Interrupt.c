@@ -65,7 +65,7 @@ void Hal_interrupt_enable(uint32_t interrupt_num)
 
 void Hal_interrupt_register_handler(InterHdlr_fptr handler, uint32_t interrupt_num)
 {
-    sHandlers[INTERRUPT_NUM] = handler;
+    sHandlers[interrupt_num] = handler;
 }
 
 void Hal_interrupt_run_handler(void)
