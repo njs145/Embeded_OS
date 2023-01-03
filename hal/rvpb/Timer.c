@@ -19,7 +19,7 @@ void Hal_timer_init(void)
     Timer->timerxcontrol.bits.TimerPre = 0;
     Timer->timerxcontrol.bits.IntEnable = 1;
     Timer->timerxload = 0;
-    Timer->timerxvalue = 0xFFFFFFFF
+    Timer->timerxvalue = 0xFFFFFFFF;
 
     // set periodic mode
     Timer->timerxcontrol.bits.TimerMode = TIMER_PERIOIC;
