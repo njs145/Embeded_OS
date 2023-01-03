@@ -22,7 +22,7 @@ void Hal_uart_init(void)
     Uart->uartimsc.bits.RXIM = 1;
 
     Hal_interrupt_enable(UART_INTERRUPT0);
-    Hal_interrupt_run_handler(interrupt_handler, UART_INTERRUPT0)
+    Hal_interrupt_register_handler(interrupt_handler, UART_INTERRUPT0);
 }
 
 void Hal_uart_put_char(uint8_t ch)
