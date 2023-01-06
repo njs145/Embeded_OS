@@ -2,6 +2,7 @@
 #include "HalUart.h"
 #include "stdio.h"
 #include "HalInterrupt.h"
+#include "HalTimer.h"
 
 static void Hw_init(void);
 static void Printf_test(void);
@@ -22,13 +23,18 @@ void main(void)
 
     Printf_test();
 
-    while(true);
+    while(true)
+    {
+        debug_printf("Current Count : %u \n",Hal_timer_get_1ms_counter());
+        delay(1000);
+    };
 }
 
 static void Hw_init(void)
 {
     Hal_interrupt_init();
     Hal_uart_init();
+    Hal_timer_init();
 }
 
 static void Printf_test(void)
