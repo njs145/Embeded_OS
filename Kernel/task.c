@@ -10,7 +10,7 @@ static uint32_t         sAllocated_tcb_index;
 static KernelTcb_t      sCurrent_tcb;
 
 static KernelTcb_t*     Scheduler_round_robin_algorithm(void);
-uint32_t Kernel_task_create(KernelTaskFunc_t startFunc);
+uint32_t Kernel_task_create(KernelTaskFunc_t startFunc , uint32_t priority);
 
 void Kernel_task_init(void)
 {
@@ -28,7 +28,7 @@ void Kernel_task_init(void)
     }
 }
 
-uint32_t Kernel_task_create(KernelTaskFunc_t startFunc)
+uint32_t Kernel_task_create(KernelTaskFunc_t startFunc , uint32_t priority)
 {
     KernelTcb_t* new_tcb = &sTask_list[sAllocated_tcb_index ++];
 
@@ -36,6 +36,8 @@ uint32_t Kernel_task_create(KernelTaskFunc_t startFunc)
     {
         return NOT_ENOUGH_TASK_NUM;
     }
+
+    new_tcb->priority = priority;
 
     KernelTaskContext_t* ctx = (KernelTaskContext_t*)new_tcb->sp;
     ctx->pc = (uint32_t) startFunc;
@@ -49,4 +51,20 @@ static KernelTcb_t* Scheduler_round_robin_algorithm(void)
     sCurrent_tcb_index %= sAllocated_tcb_index;
 
     return &sTask_list[sCurrent_tcb_index];
+}
+
+static KernelTcb_t* Scheduler_priority_algorithm(void)
+{
+    for(int i = 0; i < sAllocated_tcb_index; i++)
+    {
+        KernelTcb_t* pNext_tcb = &sTask_list[i];
+        if(pNext_tcb != pNext_tcb)
+        {
+            if(pNext_tcb->priority <= sCurrent_tcb->priority)
+            {
+                return pNext_tcb;
+            }
+        }
+        return sCurrent_tcb;
+    }
 }
