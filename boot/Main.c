@@ -3,6 +3,12 @@
 #include "stdio.h"
 #include "HalInterrupt.h"
 #include "HalTimer.h"
+#include "stdlib.h"
+#include "task.h"
+
+void User_task0(void);
+void User_task1(void);
+void User_task2(void);
 
 static void Hw_init(void);
 static void Printf_test(void);
@@ -51,4 +57,51 @@ static void Printf_test(void)
     debug_printf("dec=%u hex=%x\n", 0xff, 0xff);
     debug_printf("print zero %u\n", 0);
     debug_printf("SYSCTRL0 = %u\n", *sysctrl0);
+}
+
+static void Kernel_init(void)
+{
+    uint32_t taskId;
+
+    Kernel_task_init();
+
+    taskId = Kernel_task_create(User_task0);
+    if(taskId == NOT_ENOUGH_TASK_NUM)
+    {
+        putstr("Task creation fail!\n");
+    }
+
+    taskId = Kernel_task_create(User_task1);
+    if(taskId == NOT_ENOUGH_TASK_NUM)
+    {
+        putstr("Task creation fail!\n");
+    }
+
+    taskId = Kernel_task_create(User_task2);
+    if(taskId == NOT_ENOUGH_TASK_NUM)
+    {
+        putstr("Task creation fail!\n");
+    }
+
+}
+
+void User_task0(void)
+{
+    debug_printf("User Task #0\n");
+
+    while(true);
+}
+
+void User_task1(void)
+{
+    debug_printf("User Task #1\n");
+
+    while(true);
+}
+
+void User_task2(void)
+{
+    debug_printf("User Task #2\n");
+
+    while(true);
 }
