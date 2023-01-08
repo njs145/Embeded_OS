@@ -11,9 +11,12 @@ static KernelTcb_t      sTask_list[MAX_TASK_NUM];
 static uint32_t         sAllocated_tcb_index;
 
 static KernelTcb_t*     Scheduler_round_robin_algorithm(void);
+static KernelTcb_t* Scheduler_priority_algorithm(void);
 static __attribute__ ((naked)) void Save_context(void);
+static __attribute__ ((naked)) void Restore_context(void);
 
 void Kernel_task_context_switching();
+void Kernel_task_start(void);
 
 void Kernel_task_scheduler(void)
 {
@@ -26,6 +29,7 @@ void Kernel_task_scheduler(void)
 void Kernel_task_init(void)
 {
     sAllocated_tcb_index = 0;
+    sCurrent_tcb_index = 0;
 
     for(uint32_t i = 0 ; i < MAX_TASK_NUM; i++)
     {
@@ -58,6 +62,12 @@ void Kernel_task_context_switching()
 {
     __asm__ ("B Save_context");
     __asm__ ("B Restore_context");
+}
+
+void Kernel_task_start(void)
+{
+    sNext_tcb = &sTask_list[sCurrent_tcb_index];
+    Restore_context();
 }
 
 static KernelTcb_t* Scheduler_round_robin_algorithm(void)
