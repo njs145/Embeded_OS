@@ -5,12 +5,21 @@
 #include "task.h"
 
 static uint32_t         sCurrent_tcb_index;
+static KernelTcb_t*      sCurrent_tcb;
+static KernelTcb_t*      sNext_tcb;
 static KernelTcb_t      sTask_list[MAX_TASK_NUM];
 static uint32_t         sAllocated_tcb_index;
-static KernelTcb_t      sCurrent_tcb;
 
 static KernelTcb_t*     Scheduler_round_robin_algorithm(void);
-uint32_t Kernel_task_create(KernelTaskFunc_t startFunc , uint32_t priority);
+void Kernel_task_context_switching();
+
+void Kernel_task_scheduler(void)
+{
+    sCurrent_tcb = &sTask_list[sCurrent_tcb_index];
+    sNext_tcb = Scheduler_round_robin_algorithm();
+
+    Kernel_task_context_switching();
+}
 
 void Kernel_task_init(void)
 {
@@ -28,7 +37,7 @@ void Kernel_task_init(void)
     }
 }
 
-uint32_t Kernel_task_create(KernelTaskFunc_t startFunc , uint32_t priority)
+uint32_t Kernel_task_create(KernelTaskFunc_t startFunc)
 {
     KernelTcb_t* new_tcb = &sTask_list[sAllocated_tcb_index ++];
 
@@ -37,12 +46,16 @@ uint32_t Kernel_task_create(KernelTaskFunc_t startFunc , uint32_t priority)
         return NOT_ENOUGH_TASK_NUM;
     }
 
-    new_tcb->priority = priority;
-
     KernelTaskContext_t* ctx = (KernelTaskContext_t*)new_tcb->sp;
     ctx->pc = (uint32_t) startFunc;
 
     return (sAllocated_tcb_index - 1);
+}
+
+void Kernel_task_context_switching()
+{
+    __asm__ ("B Save_context");
+    __asm__ ("B Restore_context");
 }
 
 static KernelTcb_t* Scheduler_round_robin_algorithm(void)
@@ -67,4 +80,17 @@ static KernelTcb_t* Scheduler_priority_algorithm(void)
         }
         return sCurrent_tcb;
     }
+}
+
+static __attribute__ ((naked)) void Save_context(void)
+{
+    /* save current task context into the current task stack*/
+    __asm__ ("PUSH {lr}");
+    __asm__ ("PUSH {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9,r10, r11, r12}");
+    __asm__ ("MRS   r0, cpsr");
+    __asm__ ("PUSH {r0}");
+    /* save current task stack pointer into the current TCB*/
+    __asm__ ("LDR   r0, =sCurrent_tcb");
+    __asm__ ("LDR   r0, [r0]");
+    __asm__ ("STMIA r0!, {sp}");
 }
