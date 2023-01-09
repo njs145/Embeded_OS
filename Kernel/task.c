@@ -15,7 +15,7 @@ static KernelTcb_t* Scheduler_priority_algorithm(void);
 static __attribute__ ((naked)) void Save_context(void);
 static __attribute__ ((naked)) void Restore_context(void);
 
-void Kernel_task_context_switching();
+void Kernel_task_context_switching(void);
 void Kernel_task_start(void);
 
 void Kernel_task_scheduler(void)
@@ -58,7 +58,7 @@ uint32_t Kernel_task_create(KernelTaskFunc_t startFunc)
     return (sAllocated_tcb_index - 1);
 }
 
-void Kernel_task_context_switching()
+__attribute__ ((naked)) void Kernel_task_context_switching(void)
 {
     __asm__ ("B Save_context");
     __asm__ ("B Restore_context");
