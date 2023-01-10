@@ -31,7 +31,7 @@ INC_DIRS = -I include	\
 		   -I lib		\
 		   -I Kernel
 
-CFLAGS = -c -g -std=c11
+CFLAGS = -c -g -O0 -std=c11
 
 LDFLAGS = -nostartfiles -nostdlib -nodefaultlibs -static -lgcc
 
