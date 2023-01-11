@@ -8,6 +8,8 @@
 #ifndef KERNEL_EVENT_H_
 #define KERNEL_EVENT_H_
 
+#include "stdbool.h"
+
 typedef enum KernelEventFlag_t
 {
     KernelEventFlag_UartIn      = 0x00000001,

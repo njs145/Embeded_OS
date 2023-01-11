@@ -2,7 +2,6 @@
 #include "stdbool.h"
 #include "event.h"
 #include "memio.h"
-
 #include "task.h"
 
 void Kernel_yield(void)

@@ -4,6 +4,8 @@
         "cstdio": "c",
         "haluart.h": "c",
         "stdio.h": "c",
-        "memorymap.h": "c"
+        "memorymap.h": "c",
+        "stdbool.h": "c",
+        "halinterrupt.h": "c"
     }
 }
