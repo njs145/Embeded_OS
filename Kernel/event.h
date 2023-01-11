@@ -13,7 +13,7 @@
 typedef enum KernelEventFlag_t
 {
     KernelEventFlag_UartIn      = 0x00000001,
-    KernelEventFlag_Reserved01  = 0x00000002,
+    KernelEventFlag_CmdIn       = 0x00000002,
     KernelEventFlag_Reserved02  = 0x00000004,
     KernelEventFlag_Reserved03  = 0x00000008,
     KernelEventFlag_Reserved04  = 0x00000010,
