@@ -8,6 +8,7 @@
 #include "Kernel.h"
 #include "event.h"
 #include "msg.h"
+#include "synch.h"
 
 void User_task0(void);
 void User_task1(void);
@@ -16,6 +17,9 @@ void User_task2(void);
 static void Hw_init(void);
 static void Printf_test(void);
 static void Kernel_init(void);
+static void Test_critical_section(uint32_t p, uint32_t taskId);
+
+static uint32_t shared_value;
 
 void main(void)
 {
@@ -67,6 +71,7 @@ static void Kernel_init(void)
 
     Kernel_task_init();
     Kernel_event_flag_init();
+    Kernel_sem_init(1);
 
     taskId = Kernel_task_create(User_task0);
     if(taskId == NOT_ENOUGH_TASK_NUM)
@@ -90,6 +95,19 @@ static void Kernel_init(void)
 
 }
 
+static void Test_critical_section(uint32_t p, uint32_t taskId)
+{
+    Kernel_lock_sem();
+
+    debug_printf("User Task #%u Send=%u\n", taskId, p);
+    shared_value = p;
+    Kernel_yield();
+    delay(1000);
+    debug_printf("User Task #%u Shared Value=%u\n", taskId, shared_value);
+
+    Kernel_unlock_sem();
+}
+
 void User_task0(void)
 {
     uint32_t local = 0;
@@ -101,6 +119,8 @@ void User_task0(void)
 
     while(true)
     {
+        // delay(1000);
+        // debug_printf("Enter Task0\n");
         KernelEventFlag_t handle_event = Kernel_wait_events(KernelEventFlag_UartIn|KernelEventFlag_CmdOut);
         switch(handle_event)
         {
@@ -124,7 +144,7 @@ void User_task0(void)
                 }
                 break;
             case KernelEventFlag_CmdOut:
-                debug_printf("\nCmdOut Event by Task0\n");
+                Test_critical_section(5, 0);
                 break;
         }
         Kernel_yield();
@@ -142,6 +162,8 @@ void User_task1(void)
 
     while(true)
     {
+        // delay(1000);
+        // debug_printf("Enter Task1\n");
         KernelEventFlag_t handle_event = Kernel_wait_events(KernelEventFlag_CmdIn);
         switch(handle_event)
          {
@@ -164,6 +186,9 @@ void User_task2(void)
 
     while(true)
     {
-         Kernel_yield();
+        // delay(1000);
+        // debug_printf("Enter Task2\n");
+        Test_critical_section(3, 2);
+        Kernel_yield();
     }
 }

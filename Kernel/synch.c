@@ -25,3 +25,13 @@ bool Kernel_sem_test(void)
 
     return true;
 }
+
+void Kernel_sem_release(void)
+{
+    sSem++;
+
+    if(sSem >= sSemMax)
+    {
+        sSem = sSemMax;
+    }
+}
