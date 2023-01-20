@@ -1,3 +1,6 @@
+#ifndef KERNEL_SYNCH_H_
+#define KERNEL_SYNCH_H_
+
 #include "stdint.h"
 #include "stdbool.h"
 
@@ -35,3 +38,5 @@ void Kernel_sem_release(void)
         sSem = sSemMax;
     }
 }
+
+#endif /*KERNEL_SYNCH_H_*/
