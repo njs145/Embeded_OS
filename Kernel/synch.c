@@ -1,13 +1,12 @@
-#ifndef KERNEL_SYNCH_H_
-#define KERNEL_SYNCH_H_
-
 #include "stdint.h"
 #include "stdbool.h"
+#include "synch.h"
 
 #define DEF_SEM_MAX 8
 
 static int32_t sSemMax;
 static int32_t sSem;
+KernelMutext_t sMutex;
 
 void Kernel_sem_init(int32_t max)
 {
@@ -39,4 +38,30 @@ void Kernel_sem_release(void)
     }
 }
 
-#endif /*KERNEL_SYNCH_H_*/
+void Kernel_mutex_init(void)
+{
+    sMutex.owner = 0;
+    sMutex.lock = false;
+}
+
+bool Kernel_mutex_lock(uint32_t owner)
+{
+    if(sMutex.lock)
+    {
+        return false;
+    }
+
+    sMutex.owner = owner;
+    sMutex.lock = true;
+    return true;
+}
+
+bool Kernel_mutex_unlock(uint32_t owner)
+{
+    if(owner == sMutex.owner)
+    {
+        sMutex.lock = false;
+        return true;
+    }
+    return false;
+}

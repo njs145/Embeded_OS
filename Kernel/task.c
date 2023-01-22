@@ -119,3 +119,8 @@ static __attribute__ ((naked)) void Restore_context(void)
     __asm__ ("POP   {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9,r10, r11, r12}");
     __asm__ ("POP   {pc}");
 }
+
+uint32_t Kernel_task_get_current_task_id(void)
+{
+    return sCurrent_tcb_index;
+}
